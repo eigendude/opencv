@@ -164,7 +164,17 @@ INSTANTIATE_TEST_CASE_P(RGB2GrayPerfTestGPU, RGB2GrayPerfTest,
                         Values(szVGA, sz720p, sz1080p),
                         Values(cv::compile_args(IMGPROC_GPU))));
 
+INSTANTIATE_TEST_CASE_P(RGBA2GrayPerfTestGPU, RGBA2GrayPerfTest,
+                        Combine(Values(ToleranceColor(1e-3).to_compare_f()),
+                        Values(szVGA, sz720p, sz1080p),
+                        Values(cv::compile_args(IMGPROC_GPU))));
+
 INSTANTIATE_TEST_CASE_P(BGR2GrayPerfTestGPU, BGR2GrayPerfTest,
+                        Combine(Values(ToleranceColor(1e-3).to_compare_f()),
+                        Values(szVGA, sz720p, sz1080p),
+                        Values(cv::compile_args(IMGPROC_GPU))));
+
+INSTANTIATE_TEST_CASE_P(BGRA2GrayPerfTestGPU, BGRA2GrayPerfTest,
                         Combine(Values(ToleranceColor(1e-3).to_compare_f()),
                         Values(szVGA, sz720p, sz1080p),
                         Values(cv::compile_args(IMGPROC_GPU))));

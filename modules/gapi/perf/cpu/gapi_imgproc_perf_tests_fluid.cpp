@@ -149,7 +149,17 @@ INSTANTIATE_TEST_CASE_P(RGB2GrayPerfTestFluid, RGB2GrayPerfTest,
             Values(szVGA, sz720p, sz1080p),
             Values(cv::compile_args(IMGPROC_FLUID))));
 
+INSTANTIATE_TEST_CASE_P(RGBA2GrayPerfTestFluid, RGBA2GrayPerfTest,
+    Combine(Values(ToleranceColor(1e-3).to_compare_f()),
+            Values(szVGA, sz720p, sz1080p),
+            Values(cv::compile_args(IMGPROC_FLUID))));
+
 INSTANTIATE_TEST_CASE_P(BGR2GrayPerfTestFluid, BGR2GrayPerfTest,
+    Combine(Values(ToleranceColor(1e-3).to_compare_f()),
+            Values(szVGA, sz720p, sz1080p),
+            Values(cv::compile_args(IMGPROC_FLUID))));
+
+INSTANTIATE_TEST_CASE_P(BGRA2GrayPerfTestFluid, BGRA2GrayPerfTest,
     Combine(Values(ToleranceColor(1e-3).to_compare_f()),
             Values(szVGA, sz720p, sz1080p),
             Values(cv::compile_args(IMGPROC_FLUID))));

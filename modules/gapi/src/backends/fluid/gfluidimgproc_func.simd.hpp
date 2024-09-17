@@ -45,6 +45,15 @@ CV_CPU_OPTIMIZATION_NAMESPACE_BEGIN
 void run_rgb2gray_impl(uchar out[], const uchar in[], int width,
                        float coef_r, float coef_g, float coef_b);
 
+//----------------------------------
+//
+// Fluid kernels: RGBA2Gray, BGRA2Gray
+//
+//----------------------------------
+
+void run_rgba2gray_impl(uchar out[], const uchar in[], int width,
+                        float coef_r, float coef_g, float coef_b);
+
 //--------------------------------------
 //
 // Fluid kernels: RGB-to-HSV
@@ -272,6 +281,43 @@ void run_rgb2gray_impl(uchar out[], const uchar in[], int width,
         uchar r = in[3*w    ];
         uchar g = in[3*w + 1];
         uchar b = in[3*w + 2];
+
+        static const int half = 1 << 15;  // Q0.0.16
+        ushort y = (r*rc + b*bc + g*gc + half) >> 16;
+        out[w] = static_cast<uchar>(y);
+    }
+}
+
+//----------------------------------
+//
+// Fluid kernels: RGBA2Gray, BGRA2Gray
+//
+//----------------------------------
+
+void run_rgba2gray_impl(uchar out[], const uchar in[], int width,
+                        float coef_r, float coef_g, float coef_b)
+{
+    // assume:
+    // - coefficients are less than 1
+    // - and their sum equals 1
+
+    constexpr int unity = 1 << 16;  // Q0.0.16 inside ushort:
+    ushort rc = static_cast<ushort>(coef_r * unity + 0.5f);
+    ushort gc = static_cast<ushort>(coef_g * unity + 0.5f);
+    ushort bc = static_cast<ushort>(coef_b * unity + 0.5f);
+
+    GAPI_Assert(rc + gc + bc <= unity);
+    GAPI_Assert(rc + gc + bc >= USHRT_MAX);
+
+#if CV_SIMD
+    // TODO
+#endif
+
+    for (int w=0; w < width; w++)
+    {
+        uchar r = in[4*w    ];
+        uchar g = in[4*w + 1];
+        uchar b = in[4*w + 2];
 
         static const int half = 1 << 15;  // Q0.0.16
         ushort y = (r*rc + b*bc + g*gc + half) >> 16;

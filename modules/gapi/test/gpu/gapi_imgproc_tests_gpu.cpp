@@ -205,9 +205,25 @@ INSTANTIATE_TEST_CASE_P(RGB2GrayTestGPU, RGB2GrayTest,
                                 Values(IMGPROC_GPU),
                                 Values(ToleranceColor(1e-3).to_compare_obj())));
 
+INSTANTIATE_TEST_CASE_P(RGBA2GrayTestGPU, RGBA2GrayTest,
+                        Combine(Values(CV_8UC4),
+                                Values(cv::Size(1280, 720),
+                                       cv::Size(640, 480)),
+                                Values(CV_8UC1),
+                                Values(IMGPROC_GPU),
+                                Values(ToleranceColor(1e-3).to_compare_obj())));
+
 INSTANTIATE_TEST_CASE_P(BGR2GrayTestGPU, BGR2GrayTest,
                         Combine(Values(CV_8UC3),
                                 Values(cv::Size(1280, 720)),
+                                Values(CV_8UC1),
+                                Values(IMGPROC_GPU),
+                                Values(ToleranceColor(1e-3).to_compare_obj())));
+
+INSTANTIATE_TEST_CASE_P(BGRA2GrayTestGPU, BGRA2GrayTest,
+                        Combine(Values(CV_8UC4),
+                                Values(cv::Size(1280, 720),
+                                       cv::Size(640, 480)),
                                 Values(CV_8UC1),
                                 Values(IMGPROC_GPU),
                                 Values(ToleranceColor(1e-3).to_compare_obj())));

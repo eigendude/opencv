@@ -252,11 +252,27 @@ GAPI_OCL_KERNEL(GOCLRGB2Gray, cv::gapi::imgproc::GRGB2Gray)
     }
 };
 
+GAPI_OCL_KERNEL(GOCLRGBA2Gray, cv::gapi::imgproc::GRGBA2Gray)
+{
+    static void run(const cv::UMat& in, cv::UMat &out)
+    {
+        cv::cvtColor(in, out, cv::COLOR_RGBA2GRAY);
+    }
+};
+
 GAPI_OCL_KERNEL(GOCLBGR2Gray, cv::gapi::imgproc::GBGR2Gray)
 {
     static void run(const cv::UMat& in, cv::UMat &out)
     {
         cv::cvtColor(in, out, cv::COLOR_BGR2GRAY);
+    }
+};
+
+GAPI_OCL_KERNEL(GOCLBGRA2Gray, cv::gapi::imgproc::GBGRA2Gray)
+{
+    static void run(const cv::UMat& in, cv::UMat &out)
+    {
+        cv::cvtColor(in, out, cv::COLOR_BGRA2GRAY);
     }
 };
 
@@ -298,7 +314,9 @@ cv::GKernelPackage cv::gapi::imgproc::ocl::kernels()
         , GOCLYUV2BGR
         , GOCLLUV2BGR
         , GOCLBGR2Gray
+        , GOCLBGRA2Gray
         , GOCLRGB2Gray
+        , GOCLRGBA2Gray
         , GOCLRGB2GrayCustom
         >();
     return pkg;

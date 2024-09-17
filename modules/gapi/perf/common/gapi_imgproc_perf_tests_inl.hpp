@@ -1235,6 +1235,44 @@ PERF_TEST_P_(RGB2GrayPerfTest, TestPerformance)
 
 //------------------------------------------------------------------------------
 
+PERF_TEST_P_(RGBA2GrayPerfTest, TestPerformance)
+{
+    compare_f cmpF = get<0>(GetParam());
+    Size sz = get<1>(GetParam());
+    cv::GCompileArgs compile_args = get<2>(GetParam());
+
+    initMatrixRandN(CV_8UC4, sz, CV_8UC1, false);
+
+    // OpenCV code /////////////////////////////////////////////////////////////
+    {
+        cv::cvtColor(in_mat1, out_mat_ocv, cv::COLOR_RGBA2GRAY);
+    }
+
+    // G-API code //////////////////////////////////////////////////////////////
+    cv::GMat in;
+    auto out = cv::gapi::RGBA2Gray(in);
+    cv::GComputation c(in, out);
+
+    // Warm-up graph engine:
+    c.apply(in_mat1, out_mat_gapi, std::move(compile_args));
+
+    TEST_CYCLE()
+    {
+        c.apply(in_mat1, out_mat_gapi);
+    }
+
+    // Comparison //////////////////////////////////////////////////////////////
+    {
+        EXPECT_TRUE(cmpF(out_mat_gapi, out_mat_ocv));
+        EXPECT_EQ(out_mat_gapi.size(), sz);
+    }
+
+    SANITY_CHECK_NOTHING();
+
+}
+
+//------------------------------------------------------------------------------
+
 PERF_TEST_P_(BGR2GrayPerfTest, TestPerformance)
 {
     compare_f cmpF = get<0>(GetParam());
@@ -1251,6 +1289,44 @@ PERF_TEST_P_(BGR2GrayPerfTest, TestPerformance)
     // G-API code //////////////////////////////////////////////////////////////
     cv::GMat in;
     auto out = cv::gapi::BGR2Gray(in);
+    cv::GComputation c(in, out);
+
+    // Warm-up graph engine:
+    c.apply(in_mat1, out_mat_gapi, std::move(compile_args));
+
+    TEST_CYCLE()
+    {
+        c.apply(in_mat1, out_mat_gapi);
+    }
+
+    // Comparison //////////////////////////////////////////////////////////////
+    {
+        EXPECT_TRUE(cmpF(out_mat_gapi, out_mat_ocv));
+        EXPECT_EQ(out_mat_gapi.size(), sz);
+    }
+
+    SANITY_CHECK_NOTHING();
+
+}
+
+//------------------------------------------------------------------------------
+
+PERF_TEST_P_(BGRA2GrayPerfTest, TestPerformance)
+{
+    compare_f cmpF = get<0>(GetParam());
+    Size sz = get<1>(GetParam());
+    cv::GCompileArgs compile_args = get<2>(GetParam());
+
+    initMatrixRandN(CV_8UC4, sz, CV_8UC1, false);
+
+    // OpenCV code /////////////////////////////////////////////////////////////
+    {
+        cv::cvtColor(in_mat1, out_mat_ocv, cv::COLOR_BGRA2GRAY);
+    }
+
+    // G-API code //////////////////////////////////////////////////////////////
+    cv::GMat in;
+    auto out = cv::gapi::BGRA2Gray(in);
     cv::GComputation c(in, out);
 
     // Warm-up graph engine:

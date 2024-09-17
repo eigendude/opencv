@@ -329,7 +329,17 @@ INSTANTIATE_TEST_CASE_P(RGB2GrayPerfTestCPU, RGB2GrayPerfTest,
         Values(szVGA, sz720p, sz1080p),
         Values(cv::compile_args(IMGPROC_CPU))));
 
+INSTANTIATE_TEST_CASE_P(RGBA2GrayPerfTestCPU, RGBA2GrayPerfTest,
+    Combine(Values(AbsExact().to_compare_f()),
+        Values(szVGA, sz720p, sz1080p),
+        Values(cv::compile_args(IMGPROC_CPU))));
+
 INSTANTIATE_TEST_CASE_P(BGR2GrayPerfTestCPU, BGR2GrayPerfTest,
+    Combine(Values(AbsExact().to_compare_f()),
+        Values(szVGA, sz720p, sz1080p),
+        Values(cv::compile_args(IMGPROC_CPU))));
+
+INSTANTIATE_TEST_CASE_P(BGRA2GrayPerfTestCPU, BGRA2GrayPerfTest,
     Combine(Values(AbsExact().to_compare_f()),
         Values(szVGA, sz720p, sz1080p),
         Values(cv::compile_args(IMGPROC_CPU))));

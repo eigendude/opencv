@@ -41,6 +41,20 @@ void run_rgb2gray_impl(uchar out[], const uchar in[], int width,
         CV_CPU_DISPATCH_MODES_ALL);
 }
 
+//----------------------------------
+//
+// Fluid kernels: RGBA2Gray, BGRA2Gray
+//
+//----------------------------------
+
+void run_rgba2gray_impl(uchar out[], const uchar in[], int width,
+                        float coef_r, float coef_g, float coef_b)
+{
+    CV_CPU_DISPATCH(run_rgba2gray_impl,
+        (out, in, width, coef_r, coef_g, coef_b),
+        CV_CPU_DISPATCH_MODES_ALL);
+}
+
 //--------------------------------------
 //
 // Fluid kernels: RGB-to-HSV

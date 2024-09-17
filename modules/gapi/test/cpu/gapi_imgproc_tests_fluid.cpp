@@ -45,9 +45,25 @@ INSTANTIATE_TEST_CASE_P(RGB2GrayTestFluid, RGB2GrayTest,
                                 Values(IMGPROC_FLUID),
                                 Values(ToleranceColor(1e-3).to_compare_obj())));
 
+INSTANTIATE_TEST_CASE_P(RGBA2GrayTestFluid, RGBA2GrayTest,
+                        Combine(Values(CV_8UC4),
+                                Values(cv::Size(1280, 720),
+                                       cv::Size(640, 480)),
+                                Values(CV_8UC1),
+                                Values(IMGPROC_FLUID),
+                                Values(ToleranceColor(1e-3).to_compare_obj())));
+
 INSTANTIATE_TEST_CASE_P(BGR2GrayTestFluid, BGR2GrayTest,
                         Combine(Values(CV_8UC3),
                                 Values(cv::Size(1280, 720)),
+                                Values(CV_8UC1),
+                                Values(IMGPROC_FLUID),
+                                Values(ToleranceColor(1e-3).to_compare_obj())));
+
+INSTANTIATE_TEST_CASE_P(BGRA2GrayTestFluid, BGRA2GrayTest,
+                        Combine(Values(CV_8UC4),
+                                Values(cv::Size(1280, 720),
+                                       cv::Size(640, 480)),
                                 Values(CV_8UC1),
                                 Values(IMGPROC_FLUID),
                                 Values(ToleranceColor(1e-3).to_compare_obj())));

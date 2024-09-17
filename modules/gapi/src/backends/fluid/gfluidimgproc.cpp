@@ -44,7 +44,7 @@ namespace fluid {
 
 //----------------------------------
 //
-// Fluid kernels: RGB2Gray, BGR2Gray
+// Fluid kernels: RGB2Gray, BGR2Gray, RGB2AGray, BGRA2Gray
 //
 //----------------------------------
 
@@ -77,6 +77,25 @@ static void run_rgb2gray(Buffer &dst, const View &src, float coef_r, float coef_
     run_rgb2gray_impl(out, in, width, coef_r, coef_g, coef_b);
 }
 
+static void run_rgba2gray(Buffer &dst, const View &src, float coef_r, float coef_g, float coef_b)
+{
+    GAPI_Assert(src.meta().depth == CV_8U);
+    GAPI_Assert(dst.meta().depth == CV_8U);
+    GAPI_Assert(src.meta().chan == 4);
+    GAPI_Assert(dst.meta().chan == 1);
+    GAPI_Assert(src.length() == dst.length());
+
+    GAPI_Assert(coef_r < 1 && coef_g < 1 && coef_b < 1);
+    GAPI_Assert(std::abs(coef_r + coef_g + coef_b - 1) < 0.001);
+
+    const auto *in  = src.InLine<uchar>(0);
+          auto *out = dst.OutLine<uchar>();
+
+    int width = dst.length();
+
+    run_rgba2gray_impl(out, in, width, coef_r, coef_g, coef_b);
+}
+
 GAPI_FLUID_KERNEL(GFluidRGB2GrayCustom, cv::gapi::imgproc::GRGB2GrayCustom, false)
 {
     static const int Window = 1;
@@ -100,6 +119,19 @@ GAPI_FLUID_KERNEL(GFluidRGB2Gray, cv::gapi::imgproc::GRGB2Gray, false)
     }
 };
 
+GAPI_FLUID_KERNEL(GFluidRGBA2Gray, cv::gapi::imgproc::GRGBA2Gray, false)
+{
+    static const int Window = 1;
+
+    static void run(const View &src, Buffer &dst)
+    {
+        float coef_r = coef_rgb2yuv_bt601[0];
+        float coef_g = coef_rgb2yuv_bt601[1];
+        float coef_b = coef_rgb2yuv_bt601[2];
+        run_rgba2gray(dst, src, coef_r, coef_g, coef_b);
+    }
+};
+
 GAPI_FLUID_KERNEL(GFluidBGR2Gray, cv::gapi::imgproc::GBGR2Gray, false)
 {
     static const int Window = 1;
@@ -110,6 +142,19 @@ GAPI_FLUID_KERNEL(GFluidBGR2Gray, cv::gapi::imgproc::GBGR2Gray, false)
         float coef_g = coef_rgb2yuv_bt601[1];
         float coef_b = coef_rgb2yuv_bt601[2];
         run_rgb2gray(dst, src, coef_b, coef_g, coef_r);
+    }
+};
+
+GAPI_FLUID_KERNEL(GFluidBGRA2Gray, cv::gapi::imgproc::GBGRA2Gray, false)
+{
+    static const int Window = 1;
+
+    static void run(const View &src, Buffer &dst)
+    {
+        float coef_r = coef_rgb2yuv_bt601[0];
+        float coef_g = coef_rgb2yuv_bt601[1];
+        float coef_b = coef_rgb2yuv_bt601[2];
+        run_rgba2gray(dst, src, coef_b, coef_g, coef_r);
     }
 };
 
@@ -2261,7 +2306,9 @@ cv::GKernelPackage cv::gapi::imgproc::fluid::kernels()
     return cv::gapi::kernels
     <   GFluidBGR2Gray
       , GFluidResize
+      , GFluidBGRA2Gray
       , GFluidRGB2Gray
+      , GFluidRGBA2Gray
       , GFluidRGB2GrayCustom
       , GFluidRGB2YUV
       , GFluidYUV2RGB
